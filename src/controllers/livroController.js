@@ -39,7 +39,7 @@ class LivroController {
             await livro.findByIdAndUpdate(id, req.body);
             res.status(200).json({ message: "Livro atualizado!" });
         } catch (erro) {
-            res.status(500).json({ message: `${erro.message} - Falha na atualizão!`})
+            res.status(500).json({ message: `${erro.message} - Falha na atualização!`})
         };
     };
 
