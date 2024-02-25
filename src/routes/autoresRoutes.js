@@ -7,6 +7,6 @@ routes.get("/autores", AutorController.listarAutores);
 routes.get("/autores/:id", AutorController.listarAutorPorId);
 routes.post("/autores", AutorController.registarAutor);
 routes.put("/autores/:id", AutorController.atualizarAutor);
-routes.delete("/autores/:id", AutorController.apagarAutor);
+routes.delete("/autores/:id", AutorController.removerAutor);
 
 export default routes;
