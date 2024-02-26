@@ -4,8 +4,9 @@ import { autor as AutorModel, livro } from "../models/index.js";
 class LivroController {
   static async listarLivros(req, res, next) {
     try {
-      const listaLivros = await livro.find({}).populate("autor").exec();
-      res.status(200).json(listaLivros);
+      const listaLivros = livro.find({}).populate("autor");
+      req.resultado = listaLivros;
+      next();
     } catch (erro) {
       next(erro);
     }
@@ -14,7 +15,11 @@ class LivroController {
   static async listarLivroPorId(req, res, next) {
     try {
       const id = req.params.id;
-      const livroResultado = await livro.findById(id).populate("autor").exec();
+      const livroResultado = livro
+        .findById(id)
+        .populate("autor");
+
+      req.resultado = livroResultado;
 
       if (livroResultado !== null) {
         res.status(200).json(livroResultado);
