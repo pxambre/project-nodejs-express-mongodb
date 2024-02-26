@@ -1,5 +1,5 @@
 import ErroNaoEncontrado from "../erros/ErroNaoEncontrado.js";
-import { livro } from "../models/index.js";
+import { autor as AutorModel, livro } from "../models/index.js";
 
 class LivroController {
   static async listarLivros(req, res, next) {
@@ -69,15 +69,40 @@ class LivroController {
     }
   }
 
-  static async listarLivrosPorEditora(req, res, next) {
-    const editora = req.query.editora;
+  static listarLivroPorFiltro = async (req, res, next) => {
     try {
-      const livrosPorEditora = await livro.find({ editora: editora });
-      res.status(200).json(livrosPorEditora);
+      const busca = await processaBusca(req.query);
+      if (busca !== null) {
+        const livrosResultado = await livro
+          .find(busca)
+          .populate("autor");
+        res.status(200).send(livrosResultado);
+      } else {
+        res.status(200).send([]);
+      }
     } catch (erro) {
       next(erro);
     }
+  };
+}
+
+async function processaBusca(parametros) {
+  const {editora, titulo, nomeAutor } = parametros;
+
+  let busca = {};
+
+  if (editora) busca.editora = editora;
+  if (titulo) busca.titulo = { $regex: titulo, $options: "i" };
+  if (nomeAutor) {
+    const autor = await AutorModel.findOne({ nome: nomeAutor });
+
+    if (autor !== null) {
+      busca.autor = autor._id;
+    } else {
+      busca = null;
+    }
   }
+  return busca;
 }
 
 export default LivroController;
